@@ -36,7 +36,12 @@ public class BinaryTreeDemo {
         System.out.println("后序查找");
         HeroNode heroNode2 = binaryTree.postSearch(3);
         System.out.println(heroNode2);
-        
+    
+        System.out.println("删除节点前------前序遍历");
+        binaryTree.preOrder();
+        binaryTree.delNode(5);
+        System.out.println("删除节点后------前序遍历");
+        binaryTree.preOrder();
     }
 }
 
@@ -100,6 +105,19 @@ class BinaryTree {
             return null;
         }
     }
+    
+    public void delNode(int no) {
+        if (root != null) {
+            if (root.getNo() == no) {
+                root = null;
+            } else {
+                this.root.delNode(no);
+            }
+        } else {
+            System.out.println("没有");
+        }
+    }
+    
     
 }
 
@@ -233,6 +251,11 @@ class HeroNode {
         return res;
     }
     
+    /**
+     * 后序查找
+     * @param no 查找的编码
+     * @return 查找的节点
+     */
     public HeroNode postOrderSearch(int no) {
         HeroNode res = null;
         if (this.left != null) {
@@ -253,7 +276,25 @@ class HeroNode {
         return null;
     }
     
-    
+    /**
+     * 删除节点
+     *
+     * @param no 结点编号
+     */
+    public void delNode(int no) {
+        if (this.left != null && this.left.no == no) {
+            this.left = null;
+        }
+        if (this.right != null && this.right.no == no) {
+            this.right = null;
+        }
+        if (this.left != null) {
+            this.left.delNode(no);
+        }
+        if (this.right != null) {
+            this.right.delNode(no);
+        }
+    }
 }
 
 
