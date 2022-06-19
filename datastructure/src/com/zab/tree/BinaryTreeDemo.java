@@ -42,6 +42,12 @@ public class BinaryTreeDemo {
         binaryTree.delNode(5);
         System.out.println("删除节点后------前序遍历");
         binaryTree.preOrder();
+    
+        System.out.println("删除节点前------前序遍历");
+        binaryTree.preOrder();
+        binaryTree.delNodePlus(5);
+        System.out.println("删除节点后------前序遍历");
+        binaryTree.preOrder();
     }
 }
 
@@ -112,6 +118,18 @@ class BinaryTree {
                 root = null;
             } else {
                 this.root.delNode(no);
+            }
+        } else {
+            System.out.println("没有");
+        }
+    }
+    
+    public void delNodePlus(int no) {
+        if (root != null) {
+            if (root.getNo() == no) {
+                root = null;
+            } else {
+                this.root.delNodePlus(no);
             }
         } else {
             System.out.println("没有");
@@ -295,6 +313,40 @@ class HeroNode {
             this.right.delNode(no);
         }
     }
+    
+    public void delNodePlus(int no) {
+        if (this.left != null && this.left.no == no) {
+            if (this.left.left != null) {
+                if (this.left.right != null) {
+                    this.left.left.right = this.left.right;
+                }
+                this.left = this.left.left;
+            } else if (this.left.right != null) {
+                this.left = this.left.right;
+                this.left.right = null;
+            } else {
+                this.left = null;
+            }
+        }
+        if (this.right != null && this.right.no == no) {
+            if (this.right.left != null) {
+                if (this.right.right != null) {
+                    this.right.left.right = this.right.right;
+                }
+                this.right = this.right.left;
+            } else if (this.right.right != null) {
+                this.right = this.right.right;
+                this.right.right = null;
+            } else {
+                this.right = null;
+            }
+        }
+    
+        if (this.left != null) {
+            this.left.delNodePlus(no);
+        }
+        if (this.right != null) {
+            this.right.delNodePlus(no);
+        }
+    }
 }
-
-
