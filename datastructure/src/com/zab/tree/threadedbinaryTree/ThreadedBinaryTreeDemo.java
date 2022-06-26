@@ -18,16 +18,27 @@ public class ThreadedBinaryTreeDemo {
 		ThreadedBinaryTree threadedBinaryTree = new ThreadedBinaryTree();
 		threadedBinaryTree.setRoot(root);
 		
+		/*// 前序线索化二叉树
+		threadedBinaryTree.threadedPreNodes();
+		System.out.println("8的前驱节点" + node2.getRight());*/
+		
+		/*// 中序线索化二叉树
 		threadedBinaryTree.threadedInfixNodes();
 		
 		System.out.println("8的前驱节点" + node3.getLeft());
 		System.out.println("8的后继节点" + node3.getRight());
 		System.out.println("10的前驱节点" + node4.getLeft());
-		System.out.println("10的后继节点" + node4.getRight());
+		System.out.println("6的后继节点" + node2.getRight());
+		
+		// 遍历中序线索二叉树
+		threadedBinaryTree.threadedInfixList(); // 8 3 10 1 14 6*/
+		
+		// 后序线索化二叉树
+		threadedBinaryTree.threadedPostNodes();
+		System.out.println("10的前驱节点" + node4.getLeft());
+		System.out.println("6的后驱节点" + node4.getRight());
 		
 		
-		// 遍历线索索引二叉树
-		threadedBinaryTree.threadedInfixList(); // 8 3 10 1 14 6
 	}
 }
 
@@ -122,12 +133,52 @@ class ThreadedBinaryTree {
 		this.threadedInfixNodes(root);
 	}
 	
+	public void threadedPreNodes() {
+		this.threadedPreNodes(root);
+	}
+	
+	public void threadedPostNodes() {
+		this.threadedPostNodes(root);
+	}
+	
+	/**
+	 * 线索化二叉树(前序)
+	 *
+	 * @param node
+	 */
+	private void threadedPreNodes(HeroNode node) {
+		if (node == null) {
+			return;
+		}
+		// 线索化左子树
+		if (node.getLeft() == null) {
+			node.setLeft(pre);
+			node.setLeftType(1);
+		}
+		
+		// 如果右节点不为空，进行线索化后继节点
+		if (pre != null && pre.getRight() == null) {
+			// 前驱节点的右指针指向当前节点
+			pre.setRight(node);
+			pre.setRightType(1);
+		}
+		
+		pre = node;
+		if (node.getLeftType() == 0) {
+			threadedPreNodes(node.getLeft());
+		}
+		if (node.getRightType() == 0) {
+			// 线索化右子树
+			threadedPreNodes(node.getRight());
+		}
+	}
+	
 	/**
 	 * 线索化二叉树(中序)
 	 *
 	 * @param node
 	 */
-	public void threadedInfixNodes(HeroNode node) {
+	private void threadedInfixNodes(HeroNode node) {
 		if (node == null) {
 			return;
 		}
@@ -155,11 +206,42 @@ class ThreadedBinaryTree {
 	}
 	
 	/**
-	 * 遍历线索化二叉树
+	 * 线索化二叉树(后序)
+	 *
+	 * @param node
+	 */
+	private void threadedPostNodes(HeroNode node) {
+		if (node == null) {
+			return;
+		}
+		
+		// 递归线索化左子树
+		threadedPostNodes(node.getLeft());
+		// 递归线索化右子树
+		threadedPostNodes(node.getRight());
+		
+		// 线索化左子树
+		if (node.getLeft() == null) {
+			node.setLeft(pre);
+			node.setLeftType(1);
+		}
+		
+		// 如果右节点不为空，进行线索化后继节点
+		if (pre != null && pre.getRight() == null) {
+			// 前驱节点的右指针指向当前节点
+			pre.setRight(node);
+			pre.setRightType(1);
+		}
+		
+		pre = node;
+	}
+	
+	/**
+	 * 遍历中序线索化二叉树
 	 */
 	public void threadedInfixList() {
 		HeroNode node = root;
-		if (root == null) {
+		if (node == null) {
 			System.out.println("根节点为空，不能遍历");
 			return;
 		}
