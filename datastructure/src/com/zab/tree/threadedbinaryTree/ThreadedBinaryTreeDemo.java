@@ -18,13 +18,16 @@ public class ThreadedBinaryTreeDemo {
 		ThreadedBinaryTree threadedBinaryTree = new ThreadedBinaryTree();
 		threadedBinaryTree.setRoot(root);
 		
-		threadedBinaryTree.threadedNodes();
+		threadedBinaryTree.threadedInfixNodes();
 		
 		System.out.println("8的前驱节点" + node3.getLeft());
 		System.out.println("8的后继节点" + node3.getRight());
 		System.out.println("10的前驱节点" + node4.getLeft());
 		System.out.println("10的后继节点" + node4.getRight());
 		
+		
+		// 遍历线索索引二叉树
+		threadedBinaryTree.threadedInfixList(); // 8 3 10 1 14 6
 	}
 }
 
@@ -115,21 +118,22 @@ class ThreadedBinaryTree {
 		}
 	}
 	
-	public void threadedNodes() {
-		this.threadedNodes(root);
+	public void threadedInfixNodes() {
+		this.threadedInfixNodes(root);
 	}
 	
 	/**
 	 * 线索化二叉树(中序)
+	 *
 	 * @param node
 	 */
-	public void threadedNodes(HeroNode node) {
+	public void threadedInfixNodes(HeroNode node) {
 		if (node == null) {
 			return;
 		}
 		
 		// 线索化左子树
-		threadedNodes(node.getLeft());
+		threadedInfixNodes(node.getLeft());
 		// 如果左节点为空的话，进行线索化为前驱节点
 		if (node.getLeft() == null) {
 			node.setLeft(pre);
@@ -138,15 +142,43 @@ class ThreadedBinaryTree {
 		
 		// 如果右节点不为空，进行线索化后继节点
 		if (pre != null && pre.getRight() == null) {
+			// 前驱节点的右指针指向当前节点
 			pre.setRight(node);
 			pre.setRightType(1);
 		}
 		
+		// ！！！每处理一次节点，当前节点是下个节点的前驱节点
 		pre = node;
 		
 		// 线索化右子树
-		threadedNodes(node.getRight());
+		threadedInfixNodes(node.getRight());
+	}
+	
+	/**
+	 * 遍历线索化二叉树
+	 */
+	public void threadedInfixList() {
+		HeroNode node = root;
+		if (root == null) {
+			System.out.println("根节点为空，不能遍历");
+			return;
+		}
 		
+		while (node != null) {
+			while (node.getLeftType() == 0) {
+				node = node.getLeft();
+			}
+			// 打印最左边的节点
+			System.out.print(node.getNo());
+			
+			while (node.getRightType() == 1) {
+				node = node.getRight();
+				System.out.print(node.getNo());
+			}
+			
+			node = node.getRight();
+			
+		}
 	}
 	
 	
