@@ -36,7 +36,7 @@ public class ThreadedBinaryTreeDemo {
 		// 后序线索化二叉树
 		threadedBinaryTree.threadedPostNodes();
 		System.out.println("10的前驱节点" + node4.getLeft());
-		System.out.println("6的后驱节点" + node4.getRight());
+		System.out.println("6的后驱节点" + node2.getRight());
 		
 		
 	}
@@ -151,19 +151,7 @@ class ThreadedBinaryTree {
 			return;
 		}
 		// 线索化左子树
-		if (node.getLeft() == null) {
-			node.setLeft(pre);
-			node.setLeftType(1);
-		}
-		
-		// 如果右节点不为空，进行线索化后继节点
-		if (pre != null && pre.getRight() == null) {
-			// 前驱节点的右指针指向当前节点
-			pre.setRight(node);
-			pre.setRightType(1);
-		}
-		
-		pre = node;
+		threadTree(node);
 		if (node.getLeftType() == 0) {
 			threadedPreNodes(node.getLeft());
 		}
@@ -173,67 +161,41 @@ class ThreadedBinaryTree {
 		}
 	}
 	
+	
+	/**
+	 * 线索化二叉树前序遍历
+	 *
+	 * @author <1254087415@qq.com>
+	 * @since 2022/7/12 22:09
+	 */
+	private void threadedPreList() {
+		HeroNode node = root;
+		while (node != null) {
+			while (node.getLeftType() == 0) {
+				System.out.println(node);
+				node = node.getLeft();
+			}
+			System.out.println(node);
+			node = node.getRight();
+		}
+	}
+	
 	/**
 	 * 线索化二叉树(中序)
 	 *
-	 * @param node
+	 * @param node 节点
 	 */
 	private void threadedInfixNodes(HeroNode node) {
 		if (node == null) {
 			return;
 		}
 		
-		// 线索化左子树
+		// 左子树
 		threadedInfixNodes(node.getLeft());
 		// 如果左节点为空的话，进行线索化为前驱节点
-		if (node.getLeft() == null) {
-			node.setLeft(pre);
-			node.setLeftType(1);
-		}
-		
-		// 如果右节点不为空，进行线索化后继节点
-		if (pre != null && pre.getRight() == null) {
-			// 前驱节点的右指针指向当前节点
-			pre.setRight(node);
-			pre.setRightType(1);
-		}
-		
-		// ！！！每处理一次节点，当前节点是下个节点的前驱节点
-		pre = node;
-		
-		// 线索化右子树
+		threadTree(node);
+		// 右子树
 		threadedInfixNodes(node.getRight());
-	}
-	
-	/**
-	 * 线索化二叉树(后序)
-	 *
-	 * @param node
-	 */
-	private void threadedPostNodes(HeroNode node) {
-		if (node == null) {
-			return;
-		}
-		
-		// 递归线索化左子树
-		threadedPostNodes(node.getLeft());
-		// 递归线索化右子树
-		threadedPostNodes(node.getRight());
-		
-		// 线索化左子树
-		if (node.getLeft() == null) {
-			node.setLeft(pre);
-			node.setLeftType(1);
-		}
-		
-		// 如果右节点不为空，进行线索化后继节点
-		if (pre != null && pre.getRight() == null) {
-			// 前驱节点的右指针指向当前节点
-			pre.setRight(node);
-			pre.setRightType(1);
-		}
-		
-		pre = node;
 	}
 	
 	/**
@@ -263,7 +225,73 @@ class ThreadedBinaryTree {
 		}
 	}
 	
+	/**
+	 * 线索化二叉树(后序)
+	 *
+	 * @param node
+	 */
+	private void threadedPostNodes(HeroNode node) {
+		if (node == null) {
+			return;
+		}
+		
+		// 递归线索化左子树
+		threadedPostNodes(node.getLeft());
+		// 递归线索化右子树
+		threadedPostNodes(node.getRight());
+		// 线索化
+		threadTree(node);
+	}
 	
+	/**
+	 * 后序线索化二叉树遍历
+	 * 需对Node进行改造，记录其父节点
+	 */
+	public void postThreadedList() {
+		HeroNode node = root;
+		while (node != null) {
+			while (node.getLeftType() == 0) {
+				node = node.getLeft();
+			}
+			while (node != null && node.getRightType() == 1) {
+				System.out.println(node);
+				pre = node;
+				node = node.getRight();
+			}
+			//若pot结点为根节点，则遍历完成
+			if (node == root) {
+				System.out.println(node);
+				return;
+			}
+			//若pot.getRight() == pre则说明以pot为根结点的子树遍历完成，应遍历pot兄弟结点。
+			// 先获取pot结点的父节点，再获取pot结点的兄弟结点。
+			//若pot结点无兄弟结点，则继续向上寻找。
+			while (node != null && node.getRight() == pre) {
+				System.out.println(node);
+				pre = node;
+			}
+			if (node != null && node.getRightType() == 0) {
+				node = node.getRight();
+			}
+		}
+	}
+	
+	
+	private void threadTree(HeroNode node) {
+		if (node.getLeft() == null) {
+			node.setLeft(pre);
+			node.setLeftType(1);
+		}
+		
+		// 如果右节点不为空，进行线索化后继节点
+		if (pre != null && pre.getRight() == null) {
+			// 前驱节点的右指针指向当前节点
+			pre.setRight(node);
+			pre.setRightType(1);
+		}
+		
+		pre = node;
+	}
 }
 
 

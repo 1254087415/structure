@@ -214,7 +214,7 @@ class HeroNode {
     
     // 后序遍历
     public void postOrder() {
-        if (this.right != null) {
+        if (this.left != null) {
             this.left.postOrder();
         }
         if (this.right != null) {
